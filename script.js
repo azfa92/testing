@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let transaksi = [];
-  let editIndex = -1;
+  let transaksi = JSON.parse(localStorage.getItem("dataTransaksi")) || [];
+  let editIndex = -1; // -1 berarti mode 'tambah', angka lain berarti indeks item yang diedit
 
-  const API_URL = "https://5714c9e8-c017-45ee-bfcf-997d67faa7d7-00-zixf8xhg24bs.pike.replit.dev";
+  // Mengambil referensi elemen-elemen DOM
   const form = document.getElementById("formTransaksi");
-  const tanggalInput = document.getElementById("tanggal");
+  const tanggalInput = doument.getElementById("tanggal");
   const keteranganInput = document.getElementById("keterangan");
   const masukInput = document.getElementById("masuk");
   const keluarInput = document.getElementById("keluar");
@@ -14,50 +14,48 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalKeluarElement = document.getElementById("totalKeluar");
   const sisaSaldoElement = document.getElementById("sisaSaldo");
 
-  // Ambil data dari backend
-  fetch(`${API_URL}/get-saldo`)
-    .then(res => res.json())
-    .then(data => {
-      transaksi = data.transaksi || [];
-      renderTransaksi();
-    })
-    .catch(err => console.error("Gagal ambil data dari backend:", err));
-
+  // --- Event Listener untuk Submit Form ---
   form.addEventListener("submit", function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah reload halaman saat form disubmit
 
     const tanggal = tanggalInput.value;
     const keterangan = keteranganInput.value;
+    // Menggunakan parseFloat agar bisa menerima nilai desimal
     const masuk = parseFloat(masukInput.value) || 0;
     const keluar = parseFloat(keluarInput.value) || 0;
 
+    // Validasi sederhana: Pastikan tanggal dan keterangan tidak kosong, dan setidaknya ada saldo masuk atau keluar
     if (!tanggal || !keterangan) {
-      alert("Tanggal dan Keterangan tidak boleh kosong.");
-      return;
+        alert("Tanggal dan Keterangan tidak boleh kosong.");
+        return;
     }
     if (masuk === 0 && keluar === 0) {
-      alert("Saldo masuk atau keluar tidak boleh kosong dua-duanya.");
-      return;
+      alert("Saldo masuk atau saldo keluar tidak boleh kosong keduanya.");
+      return; // Hentikan proses jika validasi gagal
     }
 
     if (editIndex === -1) {
+      // Mode Tambah: Tambahkan transaksi baru ke array
       transaksi.push({ tanggal, keterangan, masuk, keluar });
     } else {
+      // Mode Edit: Perbarui transaksi yang ada di array
       transaksi[editIndex] = { tanggal, keterangan, masuk, keluar };
-      editIndex = -1;
-      tombolSubmit.textContent = "Tambah";
+      editIndex = -1; // Reset editIndex setelah update selesai
+      tombolSubmit.textContent = "Tambah"; // Kembalikan teks tombol ke "Tambah"
     }
 
-    simpanKeBackend();
-    form.reset();
-    renderTransaksi();
+    simpanKeLocalStorage(); // Simpan data transaksi terbaru ke localStorage
+    form.reset(); // Kosongkan form setelah submit
+    renderTransaksi(); // Render ulang tabel untuk menampilkan perubahan terbaru
   });
 
+  // --- Fungsi untuk Merender (Menampilkan) Transaksi di Tabel ---
   function renderTransaksi() {
-    tbody.innerHTML = "";
+    tbody.innerHTML = ""; // Kosongkan isi tabel sebelum diisi ulang
     let totalMasuk = 0;
     let totalKeluar = 0;
 
+    // Loop melalui setiap item transaksi dan buat baris tabel
     transaksi.forEach((item, index) => {
       totalMasuk += item.masuk;
       totalKeluar += item.keluar;
@@ -76,70 +74,83 @@ document.addEventListener("DOMContentLoaded", function () {
       tbody.appendChild(tr);
     });
 
-    attachButtonListeners();
+    // --- Atur Event Listener untuk Tombol Edit dan Hapus setelah Dirender ---
+    // Penting: Event listener harus ditambahkan setelah elemen tombol dibuat dan ditambahkan ke DOM
+    // Memindahkan penanganan event ini di luar forEach, menggunakan event delegation
+    // agar event listener tidak ditambahkan berulang kali
+    attachButtonListeners(); // Panggil fungsi untuk melampirkan listener
+    
+    // Perbarui tampilan ringkasan saldo
     totalMasukElement.textContent = "Saldo Masuk: Rp " + totalMasuk.toLocaleString("id-ID");
     totalKeluarElement.textContent = "Saldo Keluar: Rp " + totalKeluar.toLocaleString("id-ID");
     sisaSaldoElement.textContent = "Sisa Saldo: Rp " + (totalMasuk - totalKeluar).toLocaleString("id-ID");
   }
 
+  // --- Fungsi untuk Melampirkan Event Listener ke Tombol Edit dan Hapus ---
+  // Menggunakan event delegation pada tbody untuk performa yang lebih baik
   function attachButtonListeners() {
-    tbody.removeEventListener("click", handleTableButtonClick);
-    tbody.addEventListener("click", handleTableButtonClick);
+      tbody.removeEventListener("click", handleTableButtonClick); // Hapus listener lama jika ada
+      tbody.addEventListener("click", handleTableButtonClick); // Tambahkan listener baru
   }
 
   function handleTableButtonClick(event) {
-    const target = event.target;
-    if (target.classList.contains("edit-btn")) {
-      const index = parseInt(target.getAttribute("data-index"));
-      editTransaksi(index);
-    } else if (target.classList.contains("hapus-btn")) {
-      const index = parseInt(target.getAttribute("data-index"));
-      hapusTransaksi(index);
-    }
+      const target = event.target;
+      if (target.classList.contains("edit-btn")) {
+          const index = parseInt(target.getAttribute("data-index"));
+          editTransaksi(index);
+      } else if (target.classList.contains("hapus-btn")) {
+          const index = parseInt(target.getAttribute("data-index"));
+          hapusTransaksi(index);
+      }
   }
 
+  // --- Fungsi untuk Mengisi Form saat Tombol Edit Diklik ---
   function editTransaksi(index) {
     const item = transaksi[index];
     tanggalInput.value = item.tanggal;
     keteranganInput.value = item.keterangan;
     masukInput.value = item.masuk;
     keluarInput.value = item.keluar;
-    editIndex = index;
-    tombolSubmit.textContent = "Update";
+    editIndex = index; // Set editIndex untuk menandai bahwa kita sedang dalam mode edit
+    tombolSubmit.textContent = "Update"; // Ubah teks tombol menjadi "Update"
   }
 
+  // --- Fungsi untuk Menghapus Transaksi ---
   function hapusTransaksi(index) {
     if (confirm("Yakin ingin menghapus transaksi ini?")) {
-      transaksi.splice(index, 1);
-      simpanKeBackend();
-      renderTransaksi();
+      transaksi.splice(index, 1); // Hapus 1 elemen dari array di posisi 'index'
+      simpanKeLocalStorage(); // Simpan perubahan ke localStorage
+      renderTransaksi(); // Render ulang tabel untuk mencerminkan penghapusan
+
+      // Jika item yang dihapus adalah item yang sedang diedit, reset form
       if (editIndex === index) {
         form.reset();
-        editIndex = -1;
-        tombolSubmit.textContent = "Tambah";
+        editIndex = -1; // Reset mode edit
+        tombolSubmit.textContent = "Tambah"; // Kembalikan teks tombol
       } else if (editIndex > index) {
+        // Jika item yang diedit berada setelah item yang dihapus, sesuaikan editIndex
         editIndex--;
       }
     }
   }
 
-  function simpanKeBackend() {
-    fetch(`${API_URL}/update-saldo`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ transaksi })
-    })
-      .then(res => res.json())
-      .then(res => console.log("Disimpan:", res))
-      .catch(err => console.error("Gagal simpan ke backend:", err));
+  // --- Fungsi untuk Menyimpan Data ke Local Storage ---
+  function simpanKeLocalStorage() {
+    localStorage.setItem("dataTransaksi", JSON.stringify(transaksi));
   }
 
+  // --- Fungsi Logout ---
+  // Fungsi ini dideklarasikan sebagai properti window agar bisa dipanggil langsung dari onclick di HTML
   window.logout = function () {
     if (confirm("Yakin ingin logout?")) {
-      alert("Anda telah logout.");
-      window.location.href = "index.html";
+      // Anda bisa menambahkan logika logout di sini, seperti membersihkan sesi atau token
+      alert("Anda telah logout."); // Contoh notifikasi
+      window.location.href = "index.html"; // Arahkan ke halaman login Anda
     }
   };
+
+  // --- Panggil renderTransaksi() saat halaman pertama kali dimuat ---
+  // Ini akan memuat data dari localStorage dan menampilkannya di tabel
+  renderTransaksi();
 });
+
