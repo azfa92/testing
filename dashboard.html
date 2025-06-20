@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Saldo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="logout-container">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+    <h1>Selamat Datang, Admin!</h1>
+
+    <h2>Laporan Keuangan</h2>
+    <form id="formTransaksi">
+      <input type="date" id="tanggal" required />
+      <input type="text" id="keterangan" placeholder="Keterangan" required />
+      <input type="number" id="masuk" placeholder="Saldo Masuk" value="0" step="any" />
+      <input type="number" id="keluar" placeholder="Saldo Keluar" value="0" step="any" />
+      <button type="submit" id="submitButton">Tambah</button>
+    </form>
+
+    <div class="saldo-box">
+      <h3 id="totalMasuk">Saldo Masuk: Rp 0</h3>
+      <h3 id="totalKeluar">Saldo Keluar: Rp 0</h3>
+      <h3 id="sisaSaldo">Sisa Saldo: Rp 0</h3>
+    </div>
+
+    <h2>Riwayat Transaksi</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Keterangan</th>
+            <th>Masuk</th>
+            <th>Keluar</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelRiwayat"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+

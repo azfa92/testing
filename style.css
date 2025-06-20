@@ -1,0 +1,213 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.container {
+  width: 90%;
+  max-width: 960px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Tombol Logout di luar container */
+.logout-container {
+  width: 100%;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: flex-end;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+/* Form Transaksi */
+#formTransaksi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#formTransaksi input {
+  flex: 1 1 calc(50% - 10px); /* Dua kolom pada desktop, satu pada mobile */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+#formTransaksi input[type="date"] {
+  min-width: 150px; /* Batas lebar minimum */
+}
+
+#formTransaksi input[type="text"] {
+  min-width: 150px;
+}
+
+#formTransaksi input[type="number"] {
+  min-width: 100px;
+}
+
+#formTransaksi button[type="submit"] {
+  flex: 1 1 100%; /* Tombol submit full width */
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease;
+}
+
+#formTransaksi button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+/* Saldo Box */
+.saldo-box {
+  background: #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.saldo-box h3 {
+  margin: 0;
+  color: #333;
+  flex: 1 1 auto;
+  min-width: 250px; /* Pastikan tidak terlalu sempit di mobile */
+}
+
+/* Table Riwayat Transaksi */
+.table-container {
+  overflow-x: auto; /* Agar tabel bisa discroll jika terlalu lebar */
+  margin-top: 20px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Untuk memastikan tabel tidak terlalu kecil di layar sempit */
+}
+
+table th, table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top; /* Agar konten sejajar di atas */
+}
+
+table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #555;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Tombol Edit dan Hapus */
+.edit-btn {
+  background: #ffc107; /* Kuning/Oranye */
+  color: #333;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap; /* Mencegah tombol pecah baris */
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.hapus-btn {
+  background: #dc3545; /* Merah */
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.hapus-btn:hover {
+  background-color: #c82333;
+}
+
+/* Media Queries untuk Responsif */
+@media (max-width: 768px) {
+  #formTransaksi input {
+    flex: 1 1 100%; /* Satu kolom pada mobile */
+  }
+
+  .saldo-box {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+
+
+
+
