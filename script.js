@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let transaksi = [];
   let editIndex = -1;
 
-  const API_URL = "https://saldo-api.azfa92.repl.co";
+  const API_URL = "https://5714c9e8-c017-45ee-bfcf-997d67faa7d7-00-zixf8xhg24bs.pike.replit.dev";
   const form = document.getElementById("formTransaksi");
   const tanggalInput = document.getElementById("tanggal");
   const keteranganInput = document.getElementById("keterangan");
@@ -14,12 +14,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalKeluarElement = document.getElementById("totalKeluar");
   const sisaSaldoElement = document.getElementById("sisaSaldo");
 
+  // Ambil data dari backend
   fetch(`${API_URL}/get-saldo`)
     .then(res => res.json())
     .then(data => {
       transaksi = data.transaksi || [];
       renderTransaksi();
-    });
+    })
+    .catch(err => console.error("Gagal ambil data dari backend:", err));
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -129,8 +131,9 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       body: JSON.stringify({ transaksi })
     })
-    .then(res => res.json())
-    .then(res => console.log("Disimpan:", res));
+      .then(res => res.json())
+      .then(res => console.log("Disimpan:", res))
+      .catch(err => console.error("Gagal simpan ke backend:", err));
   }
 
   window.logout = function () {
@@ -140,4 +143,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 });
-
