@@ -153,8 +153,3 @@ document.addEventListener("DOMContentLoaded", function () {
   // Ini akan memuat data dari localStorage dan menampilkannya di tabel
   renderTransaksi();
 });
-
-
-
-
-
